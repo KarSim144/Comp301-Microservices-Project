@@ -1,7 +1,9 @@
+Open this project in intellij idea. Make sure to create databases (read quick start)
+
+
+
 EventPlanner Microservices Application
 A COMP 301 requirements project.
-
-### Microservices
 
 1. **User Service** (Port 8081)
    - User registration and authentication
@@ -27,7 +29,7 @@ A COMP 301 requirements project.
    - Refund handling
    - PostgreSQL database
 
-### Prerequisites
+Prerequisites
 
 - Java 17 or higher (21 preferred)
 - Maven 3.6+
@@ -35,7 +37,7 @@ A COMP 301 requirements project.
 - MongoDB 5+ 
 - IntelliJ IDEA project<
 
-**Configure Databases**
+Configure Databases
 
    Create PostgreSQL databases from pgadmin4!
    
@@ -44,12 +46,12 @@ A COMP 301 requirements project.
    CREATE DATABASE paymentdb;
    Download MongoDB and Compass they will be created automatically.
 
-**Update application.properties for each service**
+Update application.properties for each service
 
    For PostgreSQL services (user-service, booking-service, payment-service):
    spring.datasource.url=jdbc:postgresql://localhost:5432/[database_name]
    spring.datasource.username=postgres
-   spring.datasource.password=your_password (postgres)
+   spring.datasource.password=your_password
 
    For MongoDB (event-catalog-service):
    spring.data.mongodb.uri=mongodb://localhost:27017/eventcatalog
@@ -61,7 +63,7 @@ A COMP 301 requirements project.
    - Maven will auto-import dependencies
    - Run the main Application class
 
-## 📡 API Endpoints
+## API Endpoints
 
 ### User Service (http://localhost:8081)
 

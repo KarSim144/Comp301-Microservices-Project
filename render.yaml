@@ -1,32 +1,24 @@
 services:
   - type: web
     name: user-service
-    env: static
-    plan: free
+    env: docker
     rootDir: user-service
-    buildCommand: ./mvnw clean package -DskipTests
-    startCommand: java -jar target/*.jar
+    dockerfilePath: Dockerfile
 
   - type: web
     name: event-catalog-service
-    env: static
-    plan: free
+    env: docker
     rootDir: event-catalog-service
-    buildCommand: ./mvnw clean package -DskipTests
-    startCommand: java -jar target/*.jar
+    dockerfilePath: Dockerfile
 
   - type: web
     name: booking-service
-    env: static
-    plan: free
+    env: docker
     rootDir: booking-service
-    buildCommand: ./mvnw clean package -DskipTests
-    startCommand: java -jar target/*.jar
+    dockerfilePath: Dockerfile
 
   - type: web
     name: payment-service
-    env: static
-    plan: free
+    env: docker
     rootDir: payment-service
-    buildCommand: ./mvnw clean package -DskipTests
-    startCommand: java -jar target/*.jar
+    dockerfilePath: Dockerfile

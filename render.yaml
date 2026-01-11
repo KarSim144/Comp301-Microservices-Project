@@ -1,7 +1,7 @@
 services:
   - type: web
     name: user-service
-    env: java
+    runtime: java
     plan: free
     rootDir: user-service
     buildCommand: ./mvnw clean package -DskipTests
@@ -9,7 +9,7 @@ services:
 
   - type: web
     name: event-catalog-service
-    env: java
+    runtime: java
     plan: free
     rootDir: event-catalog-service
     buildCommand: ./mvnw clean package -DskipTests
@@ -17,7 +17,7 @@ services:
 
   - type: web
     name: booking-service
-    env: java
+    runtime: java
     plan: free
     rootDir: booking-service
     buildCommand: ./mvnw clean package -DskipTests
@@ -25,7 +25,7 @@ services:
 
   - type: web
     name: payment-service
-    env: java
+    runtime: java
     plan: free
     rootDir: payment-service
     buildCommand: ./mvnw clean package -DskipTests

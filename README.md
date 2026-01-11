@@ -5,6 +5,29 @@ Open this project in intellij idea. Make sure to create databases (read quick st
 EventPlanner Microservices Application
 A COMP 301 requirements project.
 
+## Service Discovery (Eureka Server)
+
+The project uses Spring Cloud Netflix Eureka for service discovery.
+
+### Discovery Server (Port 8761)
+- Service registration and discovery
+- Health monitoring of all microservices
+- Access the Eureka Dashboard at: http://localhost:8761
+
+### Starting Order
+1. Start Discovery Server first (port 8761)
+2. Wait for it to be fully running
+3. Start other services in any order
+
+### Service Registration
+All microservices automatically register with Eureka on startup:
+- user-service
+- event-catalog-service  
+- booking-service
+- payment-service
+
+## Microservices
+
 1. **User Service** (Port 8081)
    - User registration and authentication
    - JWT token generation

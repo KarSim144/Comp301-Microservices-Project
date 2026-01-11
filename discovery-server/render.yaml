@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: discovery-server
+    env: java
+    plan: free
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/*.jar
+    envVars:
+      - key: PORT
+        value: 8761
+      - key: EUREKA_HOSTNAME
+        sync: false

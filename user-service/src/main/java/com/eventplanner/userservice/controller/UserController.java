@@ -30,14 +30,14 @@ public class UserController {
     }
 
     @GetMapping("/id/{id}")
-    @PreAuthorize("hasAnyRole('USER', 'ORGANIZER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'ORGANISER', 'ADMIN')")
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
         UserResponse user = userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
 
     @GetMapping("/username/{username}")
-    @PreAuthorize("hasAnyRole('USER', 'ORGANIZER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'ORGANISER', 'ADMIN')")
     public ResponseEntity<UserResponse> getUserByUsername(@PathVariable String username) {
         UserResponse user = userService.getUserByUsername(username);
         return ResponseEntity.ok(user);

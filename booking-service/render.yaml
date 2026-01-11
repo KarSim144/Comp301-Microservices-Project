@@ -1,10 +1,24 @@
 services:
   - type: web
-    name: ${SERVICE_NAME}
+    name: booking-service
     env: java
     plan: free
     buildCommand: ./mvnw clean package -DskipTests
     startCommand: java -jar target/*.jar
     envVars:
-      - key: SPRING_PROFILES_ACTIVE
-        value: production
+      - key: PORT
+        value: 8083
+      - key: EUREKA_ENABLED
+        value: false
+      - key: EVENT_SERVICE_URL
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false

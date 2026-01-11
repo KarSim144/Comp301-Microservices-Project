@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: user-service
+    env: java
+    plan: free
+    rootDir: user-service
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/*.jar
+
+  - type: web
+    name: event-catalog-service
+    env: java
+    plan: free
+    rootDir: event-catalog-service
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/*.jar
+
+  - type: web
+    name: booking-service
+    env: java
+    plan: free
+    rootDir: booking-service
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/*.jar
+
+  - type: web
+    name: payment-service
+    env: java
+    plan: free
+    rootDir: payment-service
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/*.jar

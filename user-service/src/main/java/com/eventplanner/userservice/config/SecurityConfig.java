@@ -4,6 +4,7 @@ import com.eventplanner.userservice.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -33,8 +34,10 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final UserDetailsService userDetailsService;
 
-    public SecurityConfig(@Lazy JwtAuthenticationFilter jwtAuthFilter,
-                          @Lazy UserDetailsService userDetailsService) {
+    public SecurityConfig(
+            @Lazy JwtAuthenticationFilter jwtAuthFilter,
+            @Lazy UserDetailsService userDetailsService
+    ) {
         this.jwtAuthFilter = jwtAuthFilter;
         this.userDetailsService = userDetailsService;
     }
@@ -42,43 +45,39 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                //  ENABLE CORS (CRITICAL)
                 .cors(Customizer.withDefaults())
+
+                // DISABLE CSRF (API + JWT)
                 .csrf(AbstractHttpConfigurer::disable)
+
+                //  ALLOW EVERYTHING (INCLUDING PREFLIGHT)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/users/register",
-                                "/api/users/login",
-                                "/api/users/{id}",
-                                "/actuator/**"
-                        ).permitAll()
-                        .requestMatchers("/api/users/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .anyRequest().permitAll()
                 )
+
+                //  STATELESS (JWT)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+
+                // JWT FILTER
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
+    //  ALLOW ALL CORS — THIS IS THE KEY PART
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of(
-                "http://localhost:3000",
-                "http://localhost:5173",
-                "https://your-frontend.onrender.com"
-        ));
-
-        configuration.setAllowedMethods(List.of(
-                "GET", "POST", "PUT", "DELETE", "OPTIONS"
-        ));
-
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true);
+        configuration.setAllowedOriginPatterns(List.of("*")); // ✅ ALLOW ANY ORIGIN
+        configuration.setAllowedMethods(List.of("*"));        // ✅ ALLOW ANY METHOD
+        configuration.setAllowedHeaders(List.of("*"));        // ✅ ALLOW ANY HEADER
+        configuration.setAllowCredentials(true);              // ✅ JWT / AUTH OK
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -95,7 +94,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
+            throws Exception {
         return config.getAuthenticationManager();
     }
 

@@ -12,6 +12,7 @@ import java.util.Map;
 
 
 //Http istekleri/rest api girişi/service yönlendirme
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/bookings")
 @RequiredArgsConstructor

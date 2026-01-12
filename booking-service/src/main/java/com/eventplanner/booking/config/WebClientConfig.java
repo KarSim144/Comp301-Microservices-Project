@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
-
+import org.springframework.beans.factory.annotation.Value;
 @Configuration
 public class WebClientConfig {
 
@@ -20,4 +20,5 @@ public WebClient eventServiceClient(WebClient.Builder builder) {
             .build();
 }
 }
+
 

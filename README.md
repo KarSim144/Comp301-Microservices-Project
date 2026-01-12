@@ -108,7 +108,7 @@ CREATE DATABASE paymentdb;
 - Events: `/api/events`, `/api/events/search?query=…`
 - Booking: `/api/bookings`, `/api/bookings/user/{userId}`
 - Payments: `/api/payments`, `/api/payments/{id}/refund`
-
+- USE THESE ON POSTMAN MAKE SURE TO FILL OUT FORMS CORRECTLY
 ---
 
 ## Tech Stack

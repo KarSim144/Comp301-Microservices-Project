@@ -1,239 +1,122 @@
-Open this project in intellij idea. Make sure to create databases (read quick start)
+# EventPlanner Microservices – Quick Start & Deployment Instructions
 
+## What is this project?
 
+**EventPlanner Microservices** is the COMP 301 course project. It is a modern, microservice-based event planning app built with Spring Boot, featuring:
 
-EventPlanner Microservices Application
-A COMP 301 requirements project.
+- **User Service**: Registration, auth, roles (PostgreSQL)
+- **Event Catalog Service**: Event creation, search/filter (MongoDB)
+- **Booking Service**: Book/cancel/confirm event tickets (PostgreSQL)
+- **Payment Service**: Payments & refunds (PostgreSQL)
+- **Service Discovery**: Eureka for seamless scaling, health, and discovery
+- JWT-based authentication and Spring Security are used for all APIs.
+- **CORS is intentionally disabled** (i.e., all origins are allowed) for easy cross-origin use (not recommended for production, but simplifies dev and deployment on Render.com).
 
-## Service Discovery (Eureka Server)
+---
 
-The project uses Spring Cloud Netflix Eureka for service discovery.
+## Running Locally
 
-### Discovery Server (Port 8761)
-- Service registration and discovery
-- Health monitoring of all microservices
-- Access the Eureka Dashboard at: http://localhost:8761
-
-### Starting Order
-1. Start Discovery Server first (port 8761)
-2. Wait for it to be fully running
-3. Start other services in any order
-
-### Service Registration
-All microservices automatically register with Eureka on startup:
-- user-service
-- event-catalog-service  
-- booking-service
-- payment-service
-
-## Microservices
-
-1. **User Service** (Port 8081)
-   - User registration and authentication
-   - JWT token generation
-   - Role-based access control
-   - PostgreSQL database
-
-2. **Event Catalog Service** (Port 8082)
-   - Event creation and management
-   - Event search and filtering
-   - Category-based organization
-   - MongoDB database
-
-3. **Booking Service** (Port 8083)
-   - Ticket booking and management
-   - Booking confirmation and cancellation
-   - Integration with Event and Payment services
-   - PostgreSQL database
-
-4. **Payment Service** (Port 8084)
-   - Payment processing
-   - Transaction management
-   - Refund handling
-   - PostgreSQL database
-
-Prerequisites
-
-- Java 17 or higher (21 preferred)
-- Maven 3.6+
-- PostgreSQL 13+ (17 preffered)
-- MongoDB 5+ 
-- IntelliJ IDEA project<
-
-Configure Databases
-
-   Create PostgreSQL databases from pgadmin4!
-   
-   CREATE DATABASE userdb;
-   CREATE DATABASE bookingdb;
-   CREATE DATABASE paymentdb;
-   Download MongoDB and Compass they will be created automatically.
-
-Update application.properties for each service
-
-   For PostgreSQL services (user-service, booking-service, payment-service):
-   spring.datasource.url=jdbc:postgresql://localhost:5432/[database_name]
-   spring.datasource.username=postgres
-   spring.datasource.password=your_password
-
-   For MongoDB (event-catalog-service):
+1. **Clone the repo** and open in IntelliJ IDEA.
+2. **Set up databases:**
+   - Create PostgreSQL databases for:
+     - `userdb`
+     - `bookingdb`
+     - `paymentdb`
+   - For MongoDB, create a database called `eventcatalog`.
+     - MongoDB data will be created automatically, but ensure you have a running instance.
+LOCALHOST VERSION IS ALSO AVAIBLE SO YOU DONT HAVE TO CHANGE ANY CODE!
+3. **Configure credentials:**  
+   Each service's `application.properties` will need:
+   ```
+   # PostgreSQL
+   spring.datasource.url=jdbc:postgresql://localhost:5432/<db_name>
+   spring.datasource.username=your_pg_user
+   spring.datasource.password=your_pg_password
+   # MongoDB
    spring.data.mongodb.uri=mongodb://localhost:27017/eventcatalog
-   
-**Build and Run Services**
+   ```
 
-   Open each service folder in IntelliJ IDEA:
-   - File → Open → Select service folder
-   - Maven will auto-import dependencies
-   - Run the main Application class
+4. **Start the Discovery Server first (port 8761) – wait until dashboard is up**
 
-## API Endpoints
+5. **Then, start the microservices (8081, 8082, 8083, 8084) in any order.**
 
-### User Service (http://localhost:8081)
+---
 
+## Deploying on Render.com (Cloud)
+
+All services can be deployed individually as web services or background workers on [Render.com](https://render.com/).
+
+**Environment Variables (use sensible secrets! Do NOT hardcode real passwords):**
 ```
-POST   /api/users/register       - Register new user
-POST   /api/users/login          - User login
-GET    /api/users/{id}           - Get user by ID
-GET    /api/users                - Get all users (Admin only)
-DELETE /api/users/{id}           - Delete user (Admin only)
+# PostgreSQL example
+SPRING_DATASOURCE_URL=jdbc:postgresql://<neon_db_host>:5432/<db_name>
+SPRING_DATASOURCE_USERNAME=<db_user>
+SPRING_DATASOURCE_PASSWORD=<db_password>
+SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+# MongoDB example
+SPRING_DATA_MONGODB_URI=mongodb+srv://<mongo_user>:<mongo_password>@<mongodb_host>/<db_name>
+
+# Eureka
+EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://<discovery-service-host>:8761/eureka/
+
+# JWT config
+JWT_SECRET=<your_jwt_secret>
+
+# Other configs
+SPRING_PROFILES_ACTIVE=prod
 ```
+Replace `<…>` with your values—**never commit secrets!**
 
-### Event Catalog Service (http://localhost:8082)
+- For Postgres on Render, you can use **Neon** as a host solution.
+- For MongoDB, you can use MongoDB Atlas or Render's managed MongoDB.
+- CORS is **disabled** by default. For security, enable it in production.
 
-```
-POST   /api/events               - Create event
-GET    /api/events               - Get all events
-GET    /api/events/{id}          - Get event by ID
-PUT    /api/events/{id}          - Update event
-DELETE /api/events/{id}          - Delete event
-GET    /api/events/category/{category} - Get events by category
-GET    /api/events/upcoming      - Get upcoming events
-GET    /api/events/search?query= - Search events
-```
+---
 
-### Booking Service (http://localhost:8083)
+## How to Create Databases
 
-```
-POST   /api/bookings             - Create booking
-GET    /api/bookings/{id}        - Get booking by ID
-GET    /api/bookings             - Get all bookings
-GET    /api/bookings/user/{userId} - Get user bookings
-POST   /api/bookings/{id}/confirm - Confirm booking
-DELETE /api/bookings/{id}        - Cancel booking
-```
-
-### Payment Service (http://localhost:8084)
-
-```
-POST   /api/payments             - Process payment
-GET    /api/payments/{id}        - Get payment by ID
-GET    /api/payments             - Get all payments
-GET    /api/payments/user/{userId} - Get user payments
-GET    /api/payments/transaction/{txnId} - Get by transaction ID
-POST   /api/payments/{id}/refund - Refund payment
-```
-
-## Testing
-
-### Sample API Calls with curl
-Use PostMan for API testing.
-
-
-## Database Schemas
-
-### User Service (PostgreSQL)
+**PostgreSQL (use psql, pgAdmin, or Neon/Render panel):**
 ```sql
-users (
-  id BIGSERIAL PRIMARY KEY,
-  username VARCHAR(50) UNIQUE NOT NULL,
-  email VARCHAR(100) UNIQUE NOT NULL,
-  password VARCHAR(255) NOT NULL,
-  first_name VARCHAR(50),
-  last_name VARCHAR(50),
-  phone_number VARCHAR(20),
-  role VARCHAR(20) NOT NULL,
-  is_active BOOLEAN DEFAULT TRUE,
-  created_at TIMESTAMP,
-  updated_at TIMESTAMP
-)
+CREATE DATABASE userdb;
+CREATE DATABASE bookingdb;
+CREATE DATABASE paymentdb;
 ```
 
-### Event Catalog Service (MongoDB)
-```javascript
-{
-  _id: ObjectId,
-  title: String,
-  description: String,
-  category: String,
-  eventDate: Date,
-  location: String,
-  capacity: Number,
-  availableSeats: Number,
-  price: Number,
-  organizerId: String,
-  imageUrl: String,
-  status: String,
-  createdAt: Date,
-  updatedAt: Date
-}
-```
+**MongoDB (use MongoDB Atlas or local, Compass):**
+- Create a database called `eventcatalog`.
+- Collections are created automatically by Spring Data.
 
-### Booking Service (PostgreSQL)
-```sql
-bookings (
-  id BIGSERIAL PRIMARY KEY,
-  user_id BIGINT NOT NULL,
-  event_id VARCHAR(255) NOT NULL,
-  number_of_tickets INTEGER NOT NULL,
-  total_amount DECIMAL(10,2) NOT NULL,
-  status VARCHAR(20) NOT NULL,
-  payment_id VARCHAR(255),
-  booking_date TIMESTAMP,
-  updated_at TIMESTAMP
-)
-```
+---
 
-### Payment Service (PostgreSQL)
-```sql
-payments (
-  id BIGSERIAL PRIMARY KEY,
-  booking_id BIGINT NOT NULL,
-  user_id BIGINT NOT NULL,
-  amount DECIMAL(10,2) NOT NULL,
-  status VARCHAR(20) NOT NULL,
-  payment_method VARCHAR(50),
-  transaction_id VARCHAR(255) UNIQUE,
-  payment_date TIMESTAMP
-)
-```
+## Useful URLs (Health & API)
 
+- Discovery (Eureka): http://localhost:8761/
+- User Service: http://localhost:8081/
+- Event Catalog: http://localhost:8082/
+- Booking Service: http://localhost:8083/
+- Payment Service: http://localhost:8084/
 
-## Technologies Used
+**Health checks:**  
+- http://localhost:8081/actuator/health  
+- http://localhost:8082/actuator/health  
+- http://localhost:8083/actuator/health  
+- http://localhost:8084/actuator/health  
 
-- **Backend Framework:** Spring Boot 3.2.0
-- **Java Version:** 21
-- **Databases:** PostgreSQL, MongoDB
-- **Security:** Spring Security, JWT
-- **Build Tool:** Maven
-- **API Documentation:** RESTful APIs
+**Sample Endpoints:**  
+- User: `/api/users/register`, `/api/users/login`
+- Events: `/api/events`, `/api/events/search?query=…`
+- Booking: `/api/bookings`, `/api/bookings/user/{userId}`
+- Payments: `/api/payments`, `/api/payments/{id}/refund`
 
+---
 
+## Tech Stack
 
-
-## Team Information
-- Members: Berkay, Alp, Derin, Burak, Utku
-- Project: EventPlanner Microservices
-- Course: COMP 301 - Software Architectures and Tools
-- Semester: Fall 2025
-
-Health Checks:
-- http://localhost:8081/actuator/health
-- http://localhost:8082/actuator/health
-- http://localhost:8083/actuator/health
-- http://localhost:8084/actuator/health
-
-View Data:
-- http://localhost:8082/api/events
-- http://localhost:8083/api/bookings
-- http://localhost:8084/api/payments
-- Rest are from Postman
+- **Spring Boot 3.2+**, **Java 21**
+- **PostgreSQL** (Neon for cloud recommended)
+- **MongoDB** (Atlas or Render.com DB, or local)
+- **Maven**
+- **Spring Cloud (Eureka)**
+- **JWT, Spring Security**
+- CORS: **DISABLED** (dev only!)

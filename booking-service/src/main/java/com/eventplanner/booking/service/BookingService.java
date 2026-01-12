@@ -65,44 +65,45 @@ public class BookingService {
     }
 
     //create booking metodu için GET http://localhost:8082/api/events/e cagri
-    private EventResponse getEventFromService(String eventId) {
-        try {
-            return eventServiceClient.get()
-                    .uri("/api/events/" + eventId)
-                    .retrieve()
-                    .bodyToMono(EventResponse.class)
-                    .timeout(Duration.ofSeconds(5))
-                    .block();
-        } catch (WebClientResponseException.NotFound e) {
-            log.error("Event not found: {}", eventId);
-            throw new ResourceNotFoundException("Event not found with id: " + eventId);
-        } catch (WebClientResponseException e) {
-            log.error("Error calling Event Service: {}", e.getMessage());
-            throw new ServiceUnavailableException("Event Service is currently unavailable");
-        } catch (Exception e) {
-            log.error("Unexpected error: {}", e.getMessage());
-            throw new ServiceUnavailableException("Unable to validate event details");
-        }
+   private EventResponse getEventFromService(String eventId) {
+    try {
+        return eventServiceClient.get()
+                .uri("/" + eventId)
+                .retrieve()
+                .bodyToMono(EventResponse.class)
+                .timeout(Duration.ofSeconds(5))
+                .block();
+    } catch (WebClientResponseException.NotFound e) {
+        log.error("Event not found: {}", eventId);
+        throw new ResourceNotFoundException("Event not found with id: " + eventId);
+    } catch (WebClientResponseException e) {
+        log.error("Error calling Event Service: {}", e.getMessage());
+        throw new ServiceUnavailableException("Event Service is currently unavailable");
+    } catch (Exception e) {
+        log.error("Unexpected error: {}", e.getMessage());
+        throw new ServiceUnavailableException("Unable to validate event details");
     }
+}
+
     //Patch ile event servicee veri gonderme
-    private void updateEventSeats(String eventId, Integer seatsToBook) {
-        try {
-            UpdateSeatsRequest updateRequest = new UpdateSeatsRequest(seatsToBook);
+   private void updateEventSeats(String eventId, Integer seatsToBook) {
+    try {
+        UpdateSeatsRequest updateRequest = new UpdateSeatsRequest(seatsToBook);
 
-            eventServiceClient.patch()
-                    .uri("/api/events/" + eventId + "/seats")
-                    .body(Mono.just(updateRequest), UpdateSeatsRequest.class)
-                    .retrieve()
-                    .bodyToMono(EventResponse.class)
-                    .timeout(Duration.ofSeconds(5))
-                    .block();
+        eventServiceClient.patch()
+                .uri("/" + eventId + "/seats")
+                .body(Mono.just(updateRequest), UpdateSeatsRequest.class)
+                .retrieve()
+                .bodyToMono(EventResponse.class)
+                .timeout(Duration.ofSeconds(5))
+                .block();
 
-            log.info("Updated seats for event: {}, booked: {}", eventId, seatsToBook);
-        } catch (Exception e) {
-            log.error("Failed to update event seats: {}", e.getMessage());
-
-        }
+        log.info("Updated seats for event: {}, booked: {}", eventId, seatsToBook);
+    } catch (Exception e) {
+        log.error("Failed to update event seats: {}", e.getMessage());
     }
+}
+
 
     public BookingResponse getBookingById(Long id) {
         Booking booking = bookingRepository.findById(id)

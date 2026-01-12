@@ -1,8 +1,16 @@
+package com.eventplanner.booking.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.client.WebClient;
+
 @Configuration
 public class WebClientConfig {
 
     private static final String EVENT_SERVICE_URL =
-        "https://event-catalog-service-uik6.onrender.com";
+            "https://event-catalog-service-uik6.onrender.com";
 
     @Bean
     public WebClient eventServiceClient(WebClient.Builder builder) {

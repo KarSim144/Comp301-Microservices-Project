@@ -65,10 +65,10 @@ public class BookingService {
     }
 
     //create booking metodu için GET http://localhost:8082/api/events/e cagri
-   private EventResponse getEventFromService(String eventId) {
+  private EventResponse getEventFromService(String eventId) {
     try {
         return eventServiceClient.get()
-                .uri("/" + eventId)
+                .uri("/api/events/" + eventId)
                 .retrieve()
                 .bodyToMono(EventResponse.class)
                 .timeout(Duration.ofSeconds(5))
@@ -85,13 +85,12 @@ public class BookingService {
     }
 }
 
-    //Patch ile event servicee veri gonderme
-   private void updateEventSeats(String eventId, Integer seatsToBook) {
+private void updateEventSeats(String eventId, Integer seatsToBook) {
     try {
         UpdateSeatsRequest updateRequest = new UpdateSeatsRequest(seatsToBook);
 
         eventServiceClient.patch()
-                .uri("/" + eventId + "/seats")
+                .uri("/api/events/" + eventId + "/seats")
                 .body(Mono.just(updateRequest), UpdateSeatsRequest.class)
                 .retrieve()
                 .bodyToMono(EventResponse.class)
@@ -102,6 +101,7 @@ public class BookingService {
     } catch (Exception e) {
         log.error("Failed to update event seats: {}", e.getMessage());
     }
+
 }
 
 

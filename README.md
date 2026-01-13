@@ -11,7 +11,9 @@
 - **Service Discovery**: Eureka for seamless scaling, health, and discovery
 - JWT-based authentication and Spring Security are used for all APIs.
 - **CORS is intentionally disabled** (i.e., all origins are allowed) for easy cross-origin use (not recommended for production, but simplifies dev and deployment on Render.com).
-
+- **Make sure to set env variables for database host name password and so on.
+- **Make sure to open up databases for booking service events and users to connect them.
+- **You can use neondatabase and mongodb
 ---
 
 ## Running Locally
